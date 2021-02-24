@@ -12,6 +12,7 @@ class SearchBar extends React.Component {
         this.handleTermChange = this.handleTermChange.bind(this);
         this.handleLocationChange = this.handleLocationChange.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
         this.sortByOptions = {
             'Best Match': 'best_match',
             'Highest Rated': 'rating',
@@ -28,6 +29,9 @@ class SearchBar extends React.Component {
 
     handleSortByChange(sortByOption) {
         this.setState({sortBy: sortByOption})
+        if (this.state.term && this.state.location) {
+            this.props.searchYelp(this.state);
+        }
     }
 
     handleTermChange(event) {
@@ -41,6 +45,13 @@ class SearchBar extends React.Component {
     handleSearch(event) {
         this.props.searchYelp(this.state);
         event.preventDefault();
+    }
+
+    handleKeyPress(event) {
+        if (event.key === 'Enter' && this.state.term && this.state.location) {
+            this.props.searchYelp(this.state);
+            event.preventDefault();
+        }
     }
 
     renderSortByOptions() {
@@ -67,8 +78,8 @@ class SearchBar extends React.Component {
                     </ul>
                 </div>
                 <div className="SearchBar-fields">
-                    <input onChange={this.handleTermChange} placeholder="Search Businesses" />
-                    <input onChange={this.handleLocationChange} placeholder="Where?" />
+                    <input onChange={this.handleTermChange} onKeyPress={this.handleKeyPress} placeholder="Search Businesses" />
+                    <input onChange={this.handleLocationChange} onKeyPress={this.handleKeyPress} placeholder="Where?" />
                 </div>
                 <div className="SearchBar-submit" onClick={this.handleSearch}>
                     <a>Let's Go</a>
